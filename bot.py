@@ -27,7 +27,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         user_text = update.message.text
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+           model="llama-3.1-8b-instant",
             messages=[{"role": "user", "content": user_text}]
         )
         await update.message.reply_text(response.choices[0].message.content)
