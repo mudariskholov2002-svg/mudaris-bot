@@ -1,5 +1,24 @@
-import os, tempfile
+import os, tempfile, threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from telegram import Update
+from telegram.ext import Application
+from groq import Groq
+
+# FAKE WEB SERVER FÜR RENDER FREE TIER
+def start_fake_server():
+    port = int(os.environ.get("PORT", 10000))
+    class Handler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(b"Bot is alive!")
+    HTTPServer(("0.0.0.0", port), Handler).serve_forever()
+
+threading.Thread(target=start_fake_server, daemon=True).start()
+
+BOT_TOKEN=os.getenv("TELEGRAM_TOKEN")
+GROQ_KEY=os.getenv("GROQ_API_KEY")
+client=Groq(api_key=GROQ_KEY)
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from groq import Groq
 
